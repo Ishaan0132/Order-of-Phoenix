@@ -1766,6 +1766,12 @@ export class BattleActions {
 		return null;
 	}
 
+	canMegaEvoY(pokemon: Pokemon) {
+		// implemented in data/mods/gen7letsgo/scripts
+		return null;
+	}
+
+
 	canUltraBurst(pokemon: Pokemon) {
 		if (['Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane'].includes(pokemon.baseSpecies.name) &&
 			pokemon.getItem().id === 'ultranecroziumz') {
@@ -1792,6 +1798,11 @@ export class BattleActions {
 
 		this.battle.runEvent('AfterMega', pokemon);
 		return true;
+	}
+
+	runMegaEvoY(pokemon: Pokemon) {
+		// implemented in data/mods/gen7letsgo/scripts
+		return false;
 	}
 
 	// #endregion
