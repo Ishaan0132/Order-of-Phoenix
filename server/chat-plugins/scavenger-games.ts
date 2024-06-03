@@ -10,13 +10,32 @@
 import {ScavengerHunt, ScavengerHuntPlayer} from './scavengers';
 import {Utils} from '../../lib';
 
-export type TwistEvent = (this: ScavengerHunt, ...args: any[]) => void;
-interface Twist {
+namespace Twists {
+	export interface Minesweeper extends ScavengerHunt {
+		mines: string[][];
+		guesses: {[playerId: string]: Set<string>}[];
+		huntLocked?: boolean;
+	}
+}
+
+export type TwistEvent<T extends ScavengerHunt> = (this: T, ...args: any[]) => void;
+interface Twist<T extends ScavengerHunt = ScavengerHunt> {
 	name: string;
 	id: string;
 	isGameMode?: true;
 	desc?: string;
-	[eventid: string]: string | number | TwistEvent | boolean | undefined;
+	[eventid: string]: string | number | TwistEvent<T> | boolean | undefined;
+}
+
+interface TwistCollection {
+	perfectscore: Twist;
+	bonusround: Twist;
+	incognito: Twist;
+	spamfilter: Twist;
+	blindincognito: Twist;
+	timetrial: Twist;
+	scavengersfeud: Twist;
+	minesweeper: Twist<Twists.Minesweeper>;
 }
 
 type GameModeFunction = (this: ScavengerGameTemplate, ...args: any[]) => void;
@@ -99,7 +118,7 @@ class Leaderboard {
 	}
 }
 
-const TWISTS: {[k: string]: Twist} = {
+const TWISTS: TwistCollection = {
 	perfectscore: {
 		name: 'Perfect Score',
 		id: 'perfectscore',
@@ -450,16 +469,24 @@ const TWISTS: {[k: string]: Twist} = {
 		id: 'minesweeper',
 		name: 'Minesweeper',
 		desc: 'The huntmaker adds \'mines\' to the hunt using `!(mine)` - players that dodge all mines get extra points, while the huntmaker gets points every time a mine is hit.',
+		onLoad(q: (string | string[])[]) {
+			for (let i = 0; i < q.length; i += 2) {
+				const answer = q[i + 1] as string[];
+				if (answer.filter(ans => ans.startsWith('!')).length === 0) {
+					throw new Chat.ErrorMessage(`No mines were added for question #${i / 2 + 1}.`);
+				}
+				if (answer.filter(ans => !ans.startsWith('!')).length === 0) {
+					throw new Chat.ErrorMessage(`No correct answers were added for question #${i / 2 + 1}.`);
+				}
+			}
+		},
+		onLoadPriority: 2,
 		onAfterLoad() {
-			this.guesses = this.questions.map(() => []);
+			this.guesses = this.questions.map(() => ({}));
 			this.mines = [];
 			for (const question of this.questions) {
 				this.mines.push(question.answer.filter(ans => ans.startsWith('!')));
 				question.answer = question.answer.filter(ans => !ans.startsWith('!'));
-			}
-			if ((this.mines as string[][]).some(mineSet => mineSet.length === 0)) {
-				this.announce('This twist requires at least one mine for each question. Please reset the hunt and make it again.');
-				this.huntLocked = true;
 			}
 		},
 
@@ -557,7 +584,7 @@ const TWISTS: {[k: string]: Twist} = {
 					const player = this.playerTable[playerId];
 					if (!player.mines) player.mines = [];
 					(player.mines as {index: number, mine: string}[]).push(...mines
-						.filter(mine => (guesses as Set<string>).has(toID(mine)))
+						.filter(mine => guesses.has(toID(mine)))
 						.map(mine => ({index: q, mine: mine.substr(1)})));
 				}
 			}
