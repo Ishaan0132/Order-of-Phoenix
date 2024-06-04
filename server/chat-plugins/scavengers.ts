@@ -318,13 +318,15 @@ class ScavengerHuntDatabase {
 		return `${hunt.hosts.map(host => host.name).join(',')} | ${hunt.questions.map(question => `${question.text} | ${question.answers.join(';')}`).join(' | ')}`;
 	}
 }
+
+export interface ScavengerHuntFinish {name: string; id: string; time: string; blitz?: boolean}
 export class ScavengerHunt extends Rooms.RoomGame<ScavengerHuntPlayer> {
 	override readonly gameid = 'scavengerhunt' as ID;
 	gameType: GameTypes;
 	joinedIps: string[];
 	startTime: number;
 	questions: {hint: string, answer: string[], spoilers: string[]}[];
-	completed: AnyObject[];
+	completed: ScavengerHuntFinish[];
 	leftHunt: {[userid: string]: 1 | undefined};
 	hosts: FakeUser[];
 	modsList: string[];
@@ -693,7 +695,7 @@ export class ScavengerHunt extends Rooms.RoomGame<ScavengerHuntPlayer> {
 		player.completed = true;
 		let result = this.runEvent('Complete', player, time, blitz);
 		if (result === true) return;
-		result = result || {name: player.name, time: time, blitz: blitz};
+		result = result || {name: player.name, id: player.id, time: time, blitz: blitz};
 		this.completed.push(result);
 		const place = Utils.formatOrder(this.completed.length);
 
