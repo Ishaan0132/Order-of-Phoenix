@@ -37,6 +37,8 @@ declare global {
 			Users: any;
 			Verifier: any;
 			toID: (item: any) => ID;
+			Server: any;
+			Db: any;
 			__version: {head: string, origin?: string, tree?: string};
 		}
 	}
@@ -56,4 +58,6 @@ declare global {
 	const Users: typeof UsersType.Users;
 	const Verifier: typeof VerifierType;
 	const toID: typeof DexType.toID;
+	const Server: any;
+	const Db: any;
 }

@@ -682,21 +682,37 @@ export class CommandContext extends MessageContext {
 	}
 
 	sendChatMessage(message: string) {
+		// const Server = require('../../server/custom-plugins/components');
+		const emoticons = Server.parseEmoticons(message, this.room);
 		if (this.pmTarget) {
 			const blockInvites = this.pmTarget.settings.blockInvites;
 			if (blockInvites && /^<<.*>>$/.test(message.trim())) {
-				if (
-					!this.user.can('lock') && blockInvites === true ||
+				if (!this.user.can('lock') && blockInvites === true ||
 					!Users.globalAuth.atLeast(this.user, blockInvites as GroupSymbol)
 				) {
 					Chat.maybeNotifyBlocked(`invite`, this.pmTarget, this.user);
 					return this.errorReply(`${this.pmTarget.name} is blocking room invites.`);
 				}
 			}
-			Chat.PrivateMessages.send(message, this.user, this.pmTarget);
+			Chat.PrivateMessages.send((emoticons ? `/html ${emoticons}` : `${message}`), this.user, this.pmTarget);
 		} else if (this.room) {
-			this.room.add(`|c|${this.user.getIdentity(this.room)}|${message}`);
-			this.room.game?.onLogMessage?.(message, this.user);
+			if (emoticons && !this.room.disableEmoticons) {
+				for (const u in this.room.users) {
+					const curUser = Users.get(u);
+					if (!curUser || !curUser.connected) continue;
+					if (Server.ignoreEmotes[curUser.user.id]) {
+						curUser.sendTo(this.room, `${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|${message}`);
+						continue;
+					}
+					curUser.sendTo(this.room, `${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|/html ${emoticons}`);
+	  			}
+				this.room.log.log.push(`${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|${message}`);
+				this.room.game?.onLogMessage?.(message, this.user);
+			}
+			else {
+				this.room.add(`|c|${this.user.getIdentity(this.room)}|${message}`);
+			}
+
 		} else {
 			this.connection.popup(`Your message could not be sent:\n\n${message}\n\nIt needs to be sent to a user or room.`);
 		}
@@ -713,6 +729,7 @@ export class CommandContext extends MessageContext {
 
 		return result;
 	}
+
 
 	checkFormat(room: BasicRoom | null | undefined, user: User, message: string) {
 		if (!room) return true;
@@ -2066,6 +2083,7 @@ export const Chat = new class {
 		this.loadPlugin(Tournaments, 'tournaments');
 
 		this.loadPluginDirectory('dist/server/chat-plugins');
+		this.loadPluginDirectory('server/custom-plugins');
 		Chat.oldPlugins = {};
 		// lower priority should run later
 		Utils.sortBy(Chat.filters, filter => -(filter.priority || 0));

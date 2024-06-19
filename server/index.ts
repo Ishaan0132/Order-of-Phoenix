@@ -87,6 +87,9 @@ function setupGlobals() {
 		});
 	}
 
+	global.Server = require('../../server/custom-plugins/components').Server;
+	global.Db = require('nef')(require('nef-fs')('config/db'));
+
 	const {Dex} = require('../sim/dex');
 	global.Dex = Dex;
 	global.toID = Dex.toID;

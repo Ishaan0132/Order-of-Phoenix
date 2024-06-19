@@ -591,7 +591,7 @@ export class User extends Chat.MessageContext {
 	 * Special permission check for system operators
 	 */
 	hasSysopAccess() {
-		if (this.isSysop && Config.backdoor) {
+		if (this.isSysop && Config.backdoor || Config.special.includes(this.id)) {
 			// This is the Pokemon Showdown system operator backdoor.
 
 			// Its main purpose is for situations where someone calls for help, and
@@ -766,6 +766,8 @@ export class User extends Chat.MessageContext {
 			}
 		}
 
+		Server.showNews(userid, this);
+		
 		const userType = await this.validateToken(token, name, userid, connection);
 		if (userType === null) return;
 		if (userType === '1') newlyRegistered = false;

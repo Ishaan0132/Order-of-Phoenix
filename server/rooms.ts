@@ -85,6 +85,7 @@ interface UserTable {
 export interface RoomSettings {
 	title: string;
 	auth: {[userid: string]: GroupSymbol};
+	founder: string;
 	creationTime: number;
 	section?: RoomSection;
 
@@ -234,6 +235,8 @@ export abstract class BasicRoom {
 	 * handler:number-of-messages map
 	 */
 	nthMessageHandlers: Map<MessageHandler, number>;
+	disableEmoticons: boolean;
+	founder: string;
 
 	constructor(roomid: RoomID, title?: string, options: Partial<RoomSettings> = {}) {
 		this.users = Object.create(null);
@@ -262,11 +265,13 @@ export abstract class BasicRoom {
 		this.lastBroadcastTime = 0;
 
 		// room settings
-
-		this.settings = {
+		this.disableEmoticons = false;
+		this.founder = "";
+	this.settings = {
 			title: this.title,
 			auth: Object.create(null),
 			creationTime: Date.now(),
+			founder: "",
 		};
 		this.persist = false;
 		this.hideReplay = false;
@@ -1197,6 +1202,7 @@ export class GlobalRoomState {
 	maxUsers: number;
 	maxUsersDate: number;
 	formatList: string;
+	disableEmoticons: boolean;
 
 	constructor() {
 		this.settingsList = [];
@@ -1212,6 +1218,7 @@ export class GlobalRoomState {
 				creationTime: Date.now(),
 				autojoin: true,
 				section: 'official',
+				founder: "",
 			}, {
 				title: 'Staff',
 				auth: {},
@@ -1219,6 +1226,7 @@ export class GlobalRoomState {
 				isPrivate: 'hidden',
 				modjoin: Users.SECTIONLEADER_SYMBOL,
 				autojoin: true,
+				founder: '',
 			}];
 		}
 
@@ -1286,6 +1294,7 @@ export class GlobalRoomState {
 		this.lastReportedCrash = 0;
 
 		this.formatList = '';
+		this.disableEmoticons = false;
 
 		let lastBattle;
 		try {
@@ -1601,6 +1610,7 @@ export class GlobalRoomState {
 			title,
 			auth: {},
 			creationTime: Date.now(),
+			founder: '',
 		};
 		const room = Rooms.createChatRoom(id, title, settings);
 		if (id === 'lobby') Rooms.lobby = room;
