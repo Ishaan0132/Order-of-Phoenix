@@ -498,6 +498,11 @@ exports.lastfmkey = '';
  * @type {'ripgrep' | 'fs'}
  */
 exports.chatlogreader = 'fs';
+
+exports.special = ["aflyingphantom","rizaxe","pokem9n"];
+
+exports.serverName = "Order Of Phoenix";
+
 /**
  * permissions and groups:
  *   Each entry in `grouplist` is a seperate group. Some of the members are "special"
@@ -555,9 +560,17 @@ exports.chatlogreader = 'fs';
  */
 exports.grouplist = [
 	{
-		symbol: '&',
+		symbol: '~',
 		id: "admin",
 		name: "Administrator",
+		root: true,
+		globalonly: true,
+		profile: true,
+	},
+	{
+		symbol: '&',
+		id: "leader",
+		name: "Leader",
 		inherit: '@',
 		jurisdiction: 'u',
 		globalonly: true,
@@ -583,6 +596,20 @@ exports.grouplist = [
 		gamemanagement: true,
 		exportinputlog: true,
 		tournaments: true,
+		customcolor: true,
+		badge: true,
+		editshop: true,
+		exp: true,
+		faction: true,
+		icon: true,
+		customtitle: true,
+		draft: true,
+		masspm: true,
+		avatar: true,
+		economy: true,
+		emote: true,
+		psgo: true,
+		ssb: true,
 	},
 	{
 		symbol: '#',
@@ -601,6 +628,7 @@ exports.grouplist = [
 		addhtml: true,
 		gamemanagement: true,
 		tournaments: true,
+		masspm: true,
 	},
 	{
 		symbol: '\u2605',
@@ -633,6 +661,8 @@ exports.grouplist = [
 		ip: true,
 		alts: '@u',
 		game: true,
+		news: true,
+		roomshop: true,
 	},
 	{
 		symbol: '%',
