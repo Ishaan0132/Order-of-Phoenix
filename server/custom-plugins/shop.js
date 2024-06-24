@@ -60,10 +60,10 @@ setTimeout(function () {
 }, 2000);
 
 function buildShop(shopData) {
-	let properties = Object.getOwnPropertyNames(shopData);
-	let arr = [];
-	for (let i in properties) {
-		let name = properties[i];
+	const properties = Object.getOwnPropertyNames(shopData);
+	const arr = [];
+	for (const i in properties) {
+		const name = properties[i];
 		arr.push(shopData[name].items);
 	}
 	for (let i = 0; i < arr.length; i++) {
@@ -72,13 +72,13 @@ function buildShop(shopData) {
 }
 
 function getItems(obj, objname) {
-	let properties = Object.getOwnPropertyNames(obj);
-	for (let i in properties) {
-		let name = properties[i];
+	const properties = Object.getOwnPropertyNames(obj);
+	for (const i in properties) {
+		const name = properties[i];
 		if (obj[name].items) {
 			getItems(obj[name].items, name);
 		} else {
-			let shopItem = {
+			const shopItem = {
 				name: name,
 				display: obj[name].display,
 				price: obj[name].price,
@@ -93,18 +93,18 @@ function getItems(obj, objname) {
 }
 
 function drawMain(output) {
-	let shopData = Server.shopData;
+	const shopData = Server.shopData;
 	output += '<div><center><table border=0>';
-	let arr = Object.getOwnPropertyNames(shopData);
-	let outputArr = [];
-	for (let x in arr) {
-		let item = arr[x];
+	const arr = Object.getOwnPropertyNames(shopData);
+	const outputArr = [];
+	for (const x in arr) {
+		const item = arr[x];
 		outputArr.push(shopData[item]);
 	}
 	for (let x = 0; x < outputArr.length; x++) {
-		let name = outputArr[x].display;
+		const name = outputArr[x].display;
 		output += '<td style="padding: 8px;"><button style="border: 2px solid #dbdbdb ; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + arr[x] + '|1">' + name + '</button></td>';
-		if ((x === 2 || x === 5 || x === 8) && x != (+outputArr.length - +1)) output += '</table><br><table border=0>';
+		if ((x === 2 || x === 5 || x === 8) && x !== (+outputArr.length - +1)) output += '</table><br><table border=0>';
 	}
 	output += '</table></center><br></div>';
 	return output;
@@ -114,22 +114,22 @@ function assembleOutput(output, marquee, shop, selectionType, back, update, user
 	output += '<br><div>';
 	output += '<div style="padding: 5px ; background: #5f49c3 ; border-top: 4px solid rgba(0 , 0 , 0 , 0.3) ; color: #fff ; text-shadow: 0 0 2px #000"><center>' + ((selectionType !== 'main' && selectionType !== 'exit') ? '<button style="border: 2px solid #dbdbdb; border-radius: 6px; background: #000000; color: white;" name="send" value="/shop main|1">Main Menu</button> <button style="border: 2px solid #dbdbdb; border-radius: 6px; background: #000000; color: white;" name="send" value="/shop ' + back + '|1">Back</button> ' : '') + '<button style="border: 2px solid #dbdbdb; border-radius: 6px; background: #000000; color: white;" name="send" value="/shop exit|1">Exit</button></center></div>';
 	shop = '<div style="background: #6D54DD ; border: 4px solid rgba(0 , 0 , 0 , 0.3) ; box-shadow: inset 0 0 1px rgba(0 , 0 , 0 , 0.5) , 0 0 1px #000 ; color: #fff ; text-shadow: 0 0 2px #000"><div style="padding: 5px ; background: #5f49c3 ; border-bottom: 4px solid rgba(0 , 0 , 0 , 0.3) ; color: #fff ; text-shadow: 0 0 2px #000"><br><center><font size=4><i><b>Server Shop</b></i></font></center><br></div><br><br>' + output;
-	if (selectionType == 'exit') shop = '<center>Shop closed - click <button style="border: 2px solid #dbdbdb; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop main|1">here</button> to reopen the shop.</center></div>';
+	if (selectionType === 'exit') shop = '<center>Shop closed - click <button style="border: 2px solid #dbdbdb; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop main|1">here</button> to reopen the shop.</center></div>';
 	if (cache) user.shopCache = shop;
 	display(update, user, room, shop);
 }
 
 function display(update, user, room, output) {
-	let uhtml = update ? '|uhtmlchange|' + user.id + 'shop|' : '|uhtml|' + user.id + 'shop|';
+	const uhtml = update ? '|uhtmlchange|' + user.id + 'shop|' : '|uhtml|' + user.id + 'shop|';
 	Users.get(user.id).connections[0].sendTo(room.roomid, uhtml + output);
 }
 
 function runTransaction(money, item, user) {
 	if (money < item.price) return false;
 	Economy.writeMoney(user.id, item.price * -1);
-	let receiptId = genReceiptId();
-	let remaining = (+money - +item.price);
-	let receipt = user.id + "|" + new Date().toUTCString() + "|" + item.display + "|" + item.price + "|" + item.currency + "|" + receiptId + "|" + remaining + "|0";
+	const receiptId = genReceiptId();
+	const remaining = (+money - +item.price);
+	const receipt = user.id + "|" + new Date().toUTCString() + "|" + item.display + "|" + item.price + "|" + item.currency + "|" + receiptId + "|" + remaining + "|0";
 	logReceipt(receipt);
 	return receipt;
 }
@@ -140,11 +140,11 @@ function logReceipt(receipt) {
 
 function failedTransaction(user, item, money, room) {
 	if (!user.shopCache) return false;
-	let cache = user.shopCache;
-	if (cache == '') return false;
-	let parts = cache.split('<!-- split -->');
-	let remaining = (+item.price - +money);
-	let output = parts[0] + '<br><br><center><b>You do not have enough ' + item.currency + '<br>' + remaining + ' more ' + item.currency + ' requied.</b></center>' + parts[2];
+	const cache = user.shopCache;
+	if (cache === '') return false;
+	const parts = cache.split('<!-- split -->');
+	const remaining = (+item.price - +money);
+	const output = parts[0] + '<br><br><center><b>You do not have enough ' + item.currency + '<br>' + remaining + ' more ' + item.currency + ' requied.</b></center>' + parts[2];
 
 	Users.get(user.id).connections[0].sendTo(room.roomid, '|uhtmlchange|' + user.id + 'shop|' + output);
 }
@@ -161,13 +161,13 @@ function successfulTransaction(item, receipt, user, room) {
 
 function genReceiptId() {
 	let receipt;
-	let lines = fs.readFileSync('logs/transactions.log', 'utf8').split('\n').reverse();
-	let existing = [];
-	for (let i in lines) {
-		let parts = lines[i].split(',');
+	const lines = fs.readFileSync('logs/transactions.log', 'utf8').split('\n').reverse();
+	const existing = [];
+	for (const i in lines) {
+		const parts = lines[i].split(',');
 		existing.push(lines[5]);
 	}
-	let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	do {
 		receipt = "";
 		for (let i = 0; i < 8; i++) {
@@ -189,11 +189,11 @@ function scaleImage(url, callback) {
 			let width = dimensions.width;
 			let height = dimensions.height;
 			if (height >= 120) {
-				let scaleFactor = +height / +120;
+				const scaleFactor = +height / +120;
 				height = +height / +scaleFactor;
 				width = +width / +scaleFactor;
 			}
-			let arr = [url, width, height];
+			const arr = [url, width, height];
 			return callback(arr);
 		});
 	} else { return callback(false); }
@@ -201,9 +201,9 @@ function scaleImage(url, callback) {
 
 exports.commands = {
 
-	shop: function (target, room, user) {
-		let shopData = Server.shopData;
-//		if (shopData.closed) return this.sendReply("The shop is currently closed; check back later.");
+	shop(target, room, user) {
+		const shopData = Server.shopData;
+		//		if (shopData.closed) return this.sendReply("The shop is currently closed; check back later.");
 		if (room.battle) return this.errorReply("The shop isn't meant to be used in battles.");
 		let shop;
 		let output = '';
@@ -232,37 +232,37 @@ exports.commands = {
 					parts = selection.split('.');
 				}
 				if (!parts) {
-					if (selection == 'main') {
+					if (selection === 'main') {
 						output = drawMain(output);
 						selectionType = 'main';
 						assembleOutput(output, marquee, shop, selectionType, false, update, user, room, false);
-					} else if (selection == 'exit') {
+					} else if (selection === 'exit') {
 						selectionType = 'exit';
 						assembleOutput(output, marquee, shop, selectionType, false, update, user, room, false);
 					} else {
 						let arr = Object.getOwnPropertyNames(shopData);
 						let match = false;
-						for (let x in arr) {
-							if (selection == arr[x]) match = arr[x];
+						for (const x in arr) {
+							if (selection === arr[x]) match = arr[x];
 						}
 						if (match) {
 							selection = shopData[match].items;
 							arr = Object.getOwnPropertyNames(selection);
-							let test = arr[0];
+							const test = arr[0];
 							selectionType = selection[test].items ? '1' : '2';
-							let outputArr = [];
-							for (let y in arr) {
-								let item = arr[y];
+							const outputArr = [];
+							for (const y in arr) {
+								const item = arr[y];
 								outputArr.push(selection[item]);
 							}
 							marquee = shopData[match].info;
-							if (selectionType == '1') {
+							if (selectionType === '1') {
 								output += '<center><table border=0>';
 								for (let x = 0; x < outputArr.length; x++) {
-									let name = outputArr[x].display;
-									let button = match + '.' + arr[x];
+									const name = outputArr[x].display;
+									const button = match + '.' + arr[x];
 									output += '<td style="padding: 8px;"><button style="border: 2px solid #dbdbdb; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + button + '|1">' + name + '</button></td>';
-									if ((x === 2 || x === 5 | x === 8) && x != (+outputArr.length - +1)) output += '</table><br><table border=0>';
+									if ((x === 2 || x === 5 | x === 8) && x !== (+outputArr.length - +1)) output += '</table><br><table border=0>';
 								}
 								output += '</table></center><br></div>';
 								assembleOutput(output, marquee, shop, selectionType, 'main', update, user, room, false);
@@ -270,8 +270,8 @@ exports.commands = {
 								//item selection
 								output += '<div style="position: relative;"><div style="width: 60%; max-height: 300px; min-height: 250px; overflow-y: scroll;"><center><table border=0>';
 								for (let x = 0; x < outputArr.length; x++) {
-									let name = outputArr[x].display;
-									let button = match + '.' + arr[x];
+									const name = outputArr[x].display;
+									const button = match + '.' + arr[x];
 									output += '<td style="padding: 5px;"><button style="border: 2px solid #dbdbdb; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + button + '|2">' + name + '</button></td><tr>';
 								}
 								output += '</table></center><br></div>';
@@ -286,27 +286,27 @@ exports.commands = {
 						}
 					}
 				} else {
-					let length = parts.length;
+					const length = parts.length;
 					let prog = 0;
 					let arr = Object.getOwnPropertyNames(shopData);
-					let path = [];
+					const path = [];
 					let match = false;
 					let container = false;
 					let containerArr = false;
 					for (let z = 0; z < length; z++) {
-						for (let x in arr) {
-							if (parts[z] == arr[x]) {
+						for (const x in arr) {
+							if (parts[z] === arr[x]) {
 								match = arr[x];
 								path.push(match);
 								prog++;
 							}
 						}
 						if (match) {
-							if (z == 0) {
+							if (z === 0) {
 								selection = shopData[match].items;
-							} else if (z > 0 && z != (+length - +1)) {
+							} else if (z > 0 && z !== (+length - +1)) {
 								selection = selection[match].items;
-							} else if (z == (+length - +1) && !selection[match].items) {
+							} else if (z === (+length - +1) && !selection[match].items) {
 								container = selection;
 								marquee = container.info;
 								selection = selection[match];
@@ -316,16 +316,16 @@ exports.commands = {
 							}
 							arr = Object.getOwnPropertyNames(selection);
 							if (container) containerArr = Object.getOwnPropertyNames(container);
-							let test = arr[0];
+							const test = arr[0];
 							selectionType = selection[test].items ? '1' : '2';
-							if (selectionType == '2' && prog !== length) {
+							if (selectionType === '2' && prog !== length) {
 								match = false;
 							}
 						}
 					}
-					if (match && prog == length && length == path.length) {
-						if (isUpdate == '1') {
-							if (selectionType == '1') {
+					if (match && prog === length && length === path.length) {
+						if (isUpdate === '1') {
+							if (selectionType === '1') {
 								output += '<center><table border=0>';
 								for (let x = 0; x < outputArr.length; x++) {
 									let last = '';
@@ -344,17 +344,17 @@ exports.commands = {
 										last = path[last];
 										back = 'main';
 									}
-									let name = outputArr[x].display;
-									let button = last + '.' + arr[x];
+									const name = outputArr[x].display;
+									const button = last + '.' + arr[x];
 									output += '<td style="padding: 8px;"><button style="border: 2px solid #dbdbdb; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + button + '|1">' + name + '</button></td>';
-									if ((x === 2 || x === 5 | x === 8) && x != (+outputArr.length - +1)) output += '</table><br><table border=0>';
+									if ((x === 2 || x === 5 | x === 8) && x !== (+outputArr.length - +1)) output += '</table><br><table border=0>';
 								}
 								output += '</table></center><br></div>';
 								assembleOutput(output, marquee, shop, selectionType, back, update, user, room, false);
 							} else {
-								let outputArr = [];
-								for (let y in arr) {
-									let item = arr[y];
+								const outputArr = [];
+								for (const y in arr) {
+									const item = arr[y];
 									outputArr.push(selection[item]);
 								}
 								output += '<div style="position: relative;"><div style="width: 60%; max-height: 300px; min-height: 250px; overflow-y: scroll;"><center><table border=0>';
@@ -367,7 +367,7 @@ exports.commands = {
 											if (q !== (+path.length - +1)) {
 												last += '.';
 												if (x == 0) back += path[q];
-												if (q !== (+path.length - +2) && x == 0) back += '.';
+												if (q !== (+path.length - +2) && x === 0) back += '.';
 											}
 										}
 									} else {
@@ -375,8 +375,8 @@ exports.commands = {
 										last = path[last];
 										back = 'main';
 									}
-									let name = outputArr[x].display;
-									let button = last + '.' + arr[x];
+									const name = outputArr[x].display;
+									const button = last + '.' + arr[x];
 									output += '<td style="padding: 5px;"><button style="border: 2px solid #dbdbdb0; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + button + '|2">' + name + '</button></td><tr>';
 								}
 								output += '</table></center><br></div>';
@@ -386,9 +386,9 @@ exports.commands = {
 							}
 						} else {
 							//item selection
-							let outputArr = [];
-							for (let y in containerArr) {
-								let item = containerArr[y];
+							const outputArr = [];
+							for (const y in containerArr) {
+								const item = containerArr[y];
 								outputArr.push(container[item]);
 							}
 							output += '<div style="position: relative;"><div style="width: 60%; max-height: 300px; min-height: 250px; overflow-y: scroll;"><center><table border=0>';
@@ -400,8 +400,8 @@ exports.commands = {
 										last += path[q];
 										if (q !== (+path.length - +2)) {
 											last += '.';
-											if (x == 0) back += path[q];
-											if (q !== (+path.length - +3) && x == 0) back += '.';
+											if (x === 0) back += path[q];
+											if (q !== (+path.length - +3) && x === 0) back += '.';
 										}
 									}
 								} else {
@@ -409,9 +409,9 @@ exports.commands = {
 									last = path[last];
 									back = 'main';
 								}
-								let name = outputArr[x].display;
-								let button = last + '.' + containerArr[x];
-								output += '<td style="padding: 5px;"><button style="border: 2px solid ' + ((containerArr[x] == match) ? '#ffffff' : '#000') + ' ; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + button + '|2">' + name + '</button></td><tr>';
+								const name = outputArr[x].display;
+								const button = last + '.' + containerArr[x];
+								output += '<td style="padding: 5px;"><button style="border: 2px solid ' + ((containerArr[x] === match) ? '#ffffff' : '#000') + ' ; border-radius: 15px 0px ; background: #000000; color: white;" name="send" value="/shop ' + button + '|2">' + name + '</button></td><tr>';
 							}
 
 							let itemId = +path.length - +1;
@@ -436,9 +436,9 @@ exports.commands = {
 		}
 	},
 
-	redeem: function (target, room, user) {
-		let shopData = Server.shopData;
-		let err = "Invalid target; this command is not meant to be used manually.";
+	redeem(target, room, user) {
+		const shopData = Server.shopData;
+		const err = "Invalid target; this command is not meant to be used manually.";
 		if (!target) return this.errorReply(err);
 		target = toID(target).trim();
 		let match = false;
@@ -446,12 +446,12 @@ exports.commands = {
 		let success = false;
 		//let sggame = Db.players.get(user.id);
 		let userPacks;
-		for (let i in Server.itemList) {
-			if (Server.itemList[i].name == target) match = Server.itemList[i];
+		for (const i in Server.itemList) {
+			if (Server.itemList[i].name === target) match = Server.itemList[i];
 		}
 		if (!match) return this.errorReply(err);
 		if (!user.tokens) user.tokens = {};
-		let self = this;
+		const self = this;
 		Economy.readMoney(user.id, stardust => {
 			switch (match.name) {
 			case 'customsymbol':
@@ -478,7 +478,7 @@ exports.commands = {
 				}
 				user.shopCache = false;
 				break;
-		    	case 'customavatar':
+			case 'customavatar':
 				if (user.tokens.avatar) return self.errorReply('You already have this purchased! Use it first with /usetoken avatar, [image]');
 				money = setupPrice(match, stardust);
 				success = runTransaction(money, match, user);
@@ -606,28 +606,28 @@ exports.commands = {
 			}
 		});
 	},
-	rebuy: function (target, room, user) {
+	rebuy(target, room, user) {
 		if (!target) return false;
 		target = target.trim();
 		user.shopCache = '';
 		return this.parse('/redeem ' + target);
 	},
-	loadshop: function (target, room, user, connection) {
+	loadshop(target, room, user, connection) {
 		if (!user.hasConsoleAccess(connection)) return this.errorReply("/dev - Access Denied.");
 		loadShops();
 	},
 
 	receipt: 'receipts',
-	receipts: function (target, room, user) {
+	receipts(target, room, user) {
 		let options;
-		let receipts = fs.readFileSync('logs/transactions.log', 'utf8').split('\n').reverse();
+		const receipts = fs.readFileSync('logs/transactions.log', 'utf8').split('\n').reverse();
 		if (!target) {
 			options = 1;
 		} else {
 			target = target.split(',');
 			if (target.length > 1) {
 				options = 2;
-				for (let t in target) target[t] = toID(target[t]).trim();
+				for (const t in target) target[t] = toID(target[t]).trim();
 			} else {
 				target = target[0].trim();
 				if (target === 'help') return this.parse('/shop help');
@@ -635,9 +635,9 @@ exports.commands = {
 			}
 		}
 		if (options === 1) {
-			let ownedReceipts = [];
-			for (let i in receipts) {
-				let parts = receipts[i].split('|');
+			const ownedReceipts = [];
+			for (const i in receipts) {
+				const parts = receipts[i].split('|');
 				if (toID(parts[0]) === user.id) ownedReceipts.push(parts[5]);
 			}
 			if (ownedReceipts.length > 0) {
@@ -654,9 +654,9 @@ exports.commands = {
 			} else {
 				name = name.name;
 			}
-			let ownedReceipts = [];
-			for (let i in receipts) {
-				let parts = receipts[i].split('|');
+			const ownedReceipts = [];
+			for (const i in receipts) {
+				const parts = receipts[i].split('|');
 				if (toID(parts[0]) === target[1]) ownedReceipts.push(parts[5]);
 			}
 			if (ownedReceipts.length > 0) {
@@ -666,9 +666,9 @@ exports.commands = {
 			}
 		} else if (options === 3) {
 			let receipt = false;
-			for (let i in receipts) {
-				let parts = receipts[i].split('|');
-				if (parts[5] == target) receipt = parts;
+			for (const i in receipts) {
+				const parts = receipts[i].split('|');
+				if (parts[5] === target) receipt = parts;
 			}
 			if (!receipt) {
 				return this.errorReply("Invalid receipt ID");

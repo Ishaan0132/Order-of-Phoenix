@@ -705,14 +705,12 @@ export class CommandContext extends MessageContext {
 						continue;
 					}
 					curUser.sendTo(this.room, `${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|/html ${emoticons}`);
-	  			}
+				}
 				this.room.log.log.push(`${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|${message}`);
 				this.room.game?.onLogMessage?.(message, this.user);
-			}
-			else {
+			} else {
 				this.room.add(`|c|${this.user.getIdentity(this.room)}|${message}`);
 			}
-
 		} else {
 			this.connection.popup(`Your message could not be sent:\n\n${message}\n\nIt needs to be sent to a user or room.`);
 		}

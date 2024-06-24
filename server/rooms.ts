@@ -267,7 +267,7 @@ export abstract class BasicRoom {
 		// room settings
 		this.disableEmoticons = false;
 		this.founder = "";
-	this.settings = {
+		this.settings = {
 			title: this.title,
 			auth: Object.create(null),
 			creationTime: Date.now(),

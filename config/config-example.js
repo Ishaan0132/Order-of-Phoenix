@@ -499,9 +499,9 @@ exports.lastfmkey = '';
  */
 exports.chatlogreader = 'fs';
 
-exports.special = ["aflyingphantom","rizaxe","pokem9n"];
+exports.special = ['aflyingphantom', 'rizaxe', 'pokem9n'];
 
-exports.serverName = "Order Of Phoenix";
+exports.serverName = 'Order Of Phoenix';
 
 /**
  * permissions and groups:

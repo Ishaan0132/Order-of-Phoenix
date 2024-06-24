@@ -23,12 +23,12 @@ function updateColor() {
 
 	let newCss = "/* COLORS START */\n";
 
-	for (let name in customColors) {
+	for (const name in customColors) {
 		newCss += generateCSS(name, customColors[name]);
 	}
 	newCss += "/* COLORS END */\n";
 
-	let file = FS("config/custom.css").readIfExistsSync().split("\n");
+	const file = FS("config/custom.css").readIfExistsSync().split("\n");
 	if (~file.indexOf("/* COLORS START */")) file.splice(file.indexOf("/* COLORS START */"), (file.indexOf("/* COLORS END */") - file.indexOf("/* COLORS START */")) + 1);
 	FS("config/custom.css").writeUpdate(() => (
 		file.join("\n") + newCss
@@ -93,7 +93,7 @@ exports.commands = {
 		},
 
 		"": "help",
-		""(target, room, user) {
+		help(target, room, user) {
 			return this.parse("/help customcolor");
 		},
 	},
@@ -109,7 +109,7 @@ exports.commands = {
 	"!hex": true,
 	hex(target, room, user) {
 		if (!this.runBroadcast()) return;
-		let targetUser = (target ? target : user.name);
+		const targetUser = (target ? target : user.name);
 		this.sendReplyBox(`The hex code of ${Server.nameColor(targetUser, true)} is: <font color="${Server.hashColor(targetUser)}"><strong>${Server.hashColor(targetUser)}</strong></font>`);
 	},
 };
@@ -183,20 +183,20 @@ function MD5(e) {
 	return (o(h) + o(p) + o(d) + o(v)).toLowerCase();
 }
 /*eslint-enable */
-let colorCache = {};
+const colorCache = {};
 
 // hashColor function
 Server.hashColor = function (name) {
 	name = toID(name);
 	if (customColors[name]) return customColors[name];
 	if (colorCache[name]) return colorCache[name];
-	let hash = MD5(name);
-	let H = parseInt(hash.substr(4, 4), 16) % 360; // 0 to 360
+	const hash = MD5(name);
+	const H = parseInt(hash.substr(4, 4), 16) % 360; // 0 to 360
 	let S = parseInt(hash.substr(0, 4), 16) % 50 + 40; // 40 to 89
 	let L = Math.floor(parseInt(hash.substr(8, 4), 16) % 20 + 30); // 30 to 49
-	let C = (100 - Math.abs(2 * L - 100)) * S / 100 / 100;
-	let X = C * (1 - Math.abs((H / 60) % 2 - 1));
-	let m = L / 100 - C / 2;
+	const C = (100 - Math.abs(2 * L - 100)) * S / 100 / 100;
+	const X = C * (1 - Math.abs((H / 60) % 2 - 1));
+	const m = L / 100 - C / 2;
 
 	let R1, G1, B1;
 	switch (Math.floor(H / 60)) {
@@ -232,7 +232,7 @@ Server.hashColor = function (name) {
 		B1 = 0;
 		break;
 	}
-	let lum = (R1 + m) * 0.2126 + (G1 + m) * 0.7152 + (B1 + m) * 0.0722; // 0.05 (dark blue) to 0.93 (yellow)
+	const lum = (R1 + m) * 0.2126 + (G1 + m) * 0.7152 + (B1 + m) * 0.0722; // 0.05 (dark blue) to 0.93 (yellow)
 	let HLmod = (lum - 0.5) * -100; // -43 (yellow) to 45 (dark blue)
 	if (HLmod > 12) {
 		HLmod -= 12;
@@ -247,7 +247,7 @@ Server.hashColor = function (name) {
 	if (HLmod > 15) Smod += (HLmod - 15) / 2;
 	S -= Smod;
 
-	let rgb = hslToRgb(H, S, L);
+	const rgb = hslToRgb(H, S, L);
 	colorCache[name] = "#" + rgbToHex(rgb.r, rgb.g, rgb.b);
 	return colorCache[name];
 };

@@ -9,7 +9,7 @@ const DEFAULT_AMOUNT = 0;
 global.moneyName = "book";
 global.moneyPlural = "books";
 
-let Economy = global.Economy = {
+const Economy = global.Economy = {
 	/**
  	* Reads the specified user's money.
  	* If they have no money, DEFAULT_AMOUNT is returned.
@@ -23,7 +23,7 @@ let Economy = global.Economy = {
 		id = toID(id);
 		if (id.substring(0, 5) === "guest") return 0;
 
-		let amount = Db.money.get(id, DEFAULT_AMOUNT);
+		const amount = Db.money.get(id, DEFAULT_AMOUNT);
 		if (callback && typeof callback === "function") {
 			// If a callback is specified, return `amount` through the callback.
 			return callback(amount);
@@ -51,9 +51,9 @@ let Economy = global.Economy = {
 			throw new Error("Economy.writeMoney: Expected amount parameter to be a Number, instead received " + typeof amount);
 		}
 
-		let curTotal = Db.money.get(id, DEFAULT_AMOUNT);
+		const curTotal = Db.money.get(id, DEFAULT_AMOUNT);
 		Db.money.set(id, curTotal + amount);
-		let newTotal = Db.money.get(id);
+		const newTotal = Db.money.get(id);
 
 		if (callback && typeof callback === "function") {
 			// If a callback is specified, return `newTotal` through the callback.
@@ -119,7 +119,7 @@ function handleBoughtItem(item, user, cost) {
 }
 
 global.rankLadder = function (title, type, array, prop, group) {
-	let groupHeader = group || `Username`;
+	const groupHeader = group || `Username`;
 	const ladderTitle = `<center><h4><u>${title}</u></h4></center>`;
 	const thStyle = `class="rankladder-headers default-td" style="background: -moz-linear-gradient(#576468, #323A3C); background: -webkit-linear-gradient(#576468, #323A3C); background: -o-linear-gradient(#576468, #323A3C); background: linear-gradient(#576468, #323A3C); box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.3) inset, 1px 1px 1px rgba(255, 255, 255, 0.7) inset;"`;
 	const tableTop = `<div style="max-height: 310px; overflow-y: scroll;"><table style="width: 100%; border-collapse: collapse;"><tr><th ${thStyle}>Rank</th><th ${thStyle}>${groupHeader}</th><th ${thStyle}>${type}</th></tr>`;
@@ -156,7 +156,7 @@ exports.commands = {
 	wallet(target, room, user) {
 		if (!target) target = user.name;
 		if (!this.runBroadcast()) return;
-		let userid = toID(target);
+		const userid = toID(target);
 		if (userid.length < 1) return this.errorReply("/wallet - Please specify a user.");
 		if (userid.length > 19) return this.errorReply("/wallet - [user] can't be longer than 19 characters.");
 
@@ -173,7 +173,7 @@ exports.commands = {
 	givecurrency(target, room, user, connection, cmd) {
 		room = this.requireRoom();
 		this.checkCan('money', null, room);
-		let [targetUser, amount, reason] = target.split(",").map(p => { return p.trim(); });
+		let [targetUser, amount, reason] = target.split(",").map(p => p.trim());
 		if (!reason) return this.errorReply(`Usage: /${cmd} [user], [amount], [reason]`);
 
 		if (toID(targetUser).length < 1) return this.errorReply(`/${cmd} - [user] may not be blank.`);
@@ -204,7 +204,7 @@ exports.commands = {
 	takecurrency(target, room, user, connection, cmd) {
 		room = this.requireRoom();
 		this.checkCan('money', null, room);
-		let [targetUser, amount, reason] = target.split(",").map(p => { return p.trim(); });
+		let [targetUser, amount, reason] = target.split(",").map(p => p.trim());
 		if (!reason) return this.errorReply(`Usage: /${cmd} [user], [amount], [reason]`);
 
 		if (toID(targetUser).length < 1 || toID(targetUser).length > 18) return this.errorReply(`/${cmd} - [user] must be between 1-18 characters long.`);
@@ -231,7 +231,7 @@ exports.commands = {
 	transfermoney: "transfercurrency",
 	confirmtransfercurrency: "transfercurrency",
 	transfercurrency(target, room, user, connection, cmd) {
-		let [targetUser, amount] = target.split(",").map(p => { return p.trim(); });
+		let [targetUser, amount] = target.split(",").map(p => p.trim());
 		if (!amount) return this.errorReply(`Usage: /${cmd} [user], [amount]`);
 
 		targetUser = Users.getExact(targetUser) ? Users.getExact(targetUser).name : targetUser;
@@ -267,14 +267,14 @@ exports.commands = {
 		if (!target) return this.errorReply("Usage: /moneylog [number] to view the last x lines OR /moneylog [text] to search for text.");
 		let word = false;
 		if (isNaN(Number(target))) word = true;
-		let lines = FS("logs/transactions.log").readIfExistsSync().split("\n").reverse();
+		const lines = FS("logs/transactions.log").readIfExistsSync().split("\n").reverse();
 		let output = "";
 		let count = 0;
-		let regex = new RegExp(target.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi"); // eslint-disable-line no-useless-escape
+		const regex = new RegExp(target.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "gi"); // eslint-disable-line no-useless-escape
 
 		if (word) {
 			output += `Displaying last 50 lines containing "${target}":\n`;
-			for (let line in lines) {
+			for (const line in lines) {
 				if (count >= 50) break;
 				if (!~lines[line].search(regex)) continue;
 				output += `${lines[line]}\n`;
@@ -296,9 +296,7 @@ exports.commands = {
 		target = Number(target);
 		if (isNaN(target)) target = 100;
 		if (!this.runBroadcast()) return;
-		let keys = Db.money.keys().map(name => {
-			return {name: name, money: Db.money.get(name).toLocaleString()};
-		});
+		const keys = Db.money.keys().map(name => ({name: name, money: Db.money.get(name).toLocaleString()}));
 		if (!keys.length) return this.errorReply("Money ladder is empty.");
 		keys.sort(function (a, b) { return toID(b.money) - toID(a.money); });
 		this.sendReplyBox(rankLadder("Richest Users", moneyPlural, keys.slice(0, target), "money") + "</div>");
@@ -318,8 +316,8 @@ exports.commands = {
 	resetmoneyhelp: [`/resetmoney [user] - Resets the target user's ATM to 0 ${moneyPlural}. Requires: @, &, or ~.`],
 
 	customsymbol(target, room, user) {
-		let bannedSymbols = ["!", "|", "‽", "\u2030", "\u534D", "\u5350", "\u223C"];
-		for (let u in Config.groups) if (Config.groups[u].symbol) bannedSymbols.push(Config.groups[u].symbol);
+		const bannedSymbols = ["!", "|", "‽", "\u2030", "\u534D", "\u5350", "\u223C"];
+		for (const u in Config.groups) if (Config.groups[u].symbol) bannedSymbols.push(Config.groups[u].symbol);
 		if (!user.canCustomSymbol && !user.can("profile")) return this.errorReply("You need to buy this item from the shop to use.");
 		if (!target || target.length > 1) return this.errorReply("/customsymbol [symbol] - changes your symbol (usergroup) to the specified symbol. The symbol can only be one character.");
 		if (target.match(/([a-zA-Z 0-9])/g) || bannedSymbols.indexOf(target) >= 0) {
@@ -346,7 +344,7 @@ exports.commands = {
 		if (!this.runBroadcast()) return;
 		const users = Db.money.keys().map(curUser => ({amount: Db.money.get(curUser)}));
 		const total = users.reduce((acc, cur) => acc + cur.amount, 0);
-		let average = Math.floor(total / users.length) || 0;
+		const average = Math.floor(total / users.length) || 0;
 		let output = `There ${(total > 1 ? "are" : "is")} ${total.toLocaleString()} ${(total > 1 ? moneyPlural : moneyName)} circulating in the economy.`;
 		output += ` The average user has ${average.toLocaleString()} ${(average > 1 ? moneyPlural : moneyName)}.`;
 		this.sendReplyBox(output);
@@ -371,9 +369,8 @@ exports.commands = {
 			delete user.tokens[target[0]];
 			return Server.pmStaff(msg);
 		case "declare":
-			target[1] = target[1].replace(/<<[a-zA-z]+>>/g, match => {
-				return `«<a href="/${toID(match)}">${match.replace(/[<<>>]/g, "")}</a>»`;
-			});
+			target[1] = target[1].replace(/<<[a-zA-z]+>>/g, match =>
+				`«<a href="/${toID(match)}">${match.replace(/[<<>>]/g, "")}</a>»`);
 			msg += `/html <center>${Server.nameColor(user.name, true)} has redeemed a global declare token.<br /> Message: ${Chat.escapeHTML(target[1])}<br />`;
 			msg += `<button class="button" name="send" value="/globaldeclare ${target[1]}">Globally Declare the Message</button></center>`;
 			delete user.tokens[target[0]];
@@ -408,7 +405,7 @@ exports.commands = {
 			return Server.pmStaff(msg);
 		case "room":
 			if (!target[1]) return this.errorReply("/usetoken room, [room name]");
-			let roomid = toID(target[1]);
+			const roomid = toID(target[1]);
 			if (Rooms.get(roomid)) return this.errorReply(`${roomid} is already a room.`);
 			msg += `/html <center>${Server.nameColor(user.name, true)} has redeemed a room token.<br />`;
 			msg += `<button class="button" name="send" value="/makechatroom ${target[1]}">Create Room <strong>"${target[1]}"</strong></button></center>`;
@@ -458,10 +455,10 @@ exports.commands = {
 	purgeeconomy(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('money', null, room);
-		let economy = Db.money.keys();
+		const economy = Db.money.keys();
 		if (!economy) return this.errorReply(`The Economy on ${Config.serverName} appears to be empty.`);
-		for (let u of economy) {
-			let portfolio = Db.money.get(u);
+		for (const u of economy) {
+			const portfolio = Db.money.get(u);
 			if (portfolio <= 0) {
 				Db.money.remove(u);
 				Economy.logTransaction(`${u}'${u.endsWith("s") ? `` : `s`} ATM was removed since it had 0 ${moneyPlural}.`);

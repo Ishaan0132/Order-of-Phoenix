@@ -3,12 +3,12 @@
 const https = require("https");
 const http = require("http");
 
-let pmName = `~${Config.serverName} Server`;
+const pmName = `~${Config.serverName} Server`;
 
-let udCache = {};
-let defCache = {};
+const udCache = {};
+const defCache = {};
 
-let messages = [
+const messages = [
 	`has vanished into nothingness!`,
 	`used Explosion!`,
 	`fell into the void.`,
@@ -30,11 +30,11 @@ let messages = [
 
 function clearRoom(room) {
 	let len = (room.log.log && room.log.log.length) || 0;
-	let users = [];
+	const users = [];
 	while (len--) {
 		room.log.log[len] = "";
 	}
-	for (let u in room.users) {
+	for (const u in room.users) {
 		users.push(u);
 		Users.get(u).leaveRoom(room, Users.get(u).connections[0]);
 	}
@@ -47,7 +47,7 @@ function clearRoom(room) {
 }
 
 exports.commands = {
-clearall(target, room, user) {
+	clearall(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('ban', null, room);
 		if (room.battle) return this.errorReply("You cannot clearall in battle rooms.");
@@ -56,7 +56,7 @@ clearall(target, room, user) {
 
 		this.privateModAction(`(${user.name} used /clearall.)`);
 	},
-  gclearall: "globalclearall",
+  	gclearall: "globalclearall",
 	globalclearall(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('hotpatch', null, room);
@@ -65,7 +65,7 @@ clearall(target, room, user) {
 		Users.users.forEach(u => user.popup("All rooms have been cleared."));
 		this.privateModAction(`(${user.name} used /globalclearall.)`);
 	},
-  rk: "kick",
+  	rk: "kick",
 	roomkick: "kick",
 	kick(target, room, user) {
 		if (!target) return this.parse("/help kick");
@@ -82,16 +82,15 @@ clearall(target, room, user) {
 		targetUser.leaveRoom(room.roomid);
 	},
 	kickhelp: ["/kick [user], [reason] - Kick a user out of a room [reasons are optional]. Requires: % @ # & ~"],
-  
-  roomlist(target, room, user) {
-		let header = [`<strong><font color="#1aff1a" size="2">Total users connected: ${Rooms.rooms.userCount}</font></strong><br />`],
+  	roomlist(target, room, user) {
+		const header = [`<strong><font color="#1aff1a" size="2">Total users connected: ${Rooms.rooms.userCount}</font></strong><br />`],
 			official = [`<strong><font color="#ff9900" size="2"><u>Official Rooms:</u></font></strong><br />`],
 			nonOfficial = [`<hr><strong><u><font color="#005ce6" size="2">Public Rooms:</font></u></strong><br />`],
 			privateRoom = [`<hr><strong><u><font color="#ff0066" size="2">Private Rooms:</font></u></strong><br />`],
 			groupChats = [`<hr><strong><u><font color="#00b386" size="2">Group Chats:</font></u></strong><br />`],
 			battleRooms = [`<hr><strong><u><font color="#cc0000" size="2">Battle Rooms:</font></u></strong><br />`];
 
-		let rooms = [];
+		const rooms = [];
 
 		Rooms.rooms.forEach(curRoom => {
 			if (curRoom.roomid !== "global") rooms.push(curRoom.roomid);
@@ -99,8 +98,8 @@ clearall(target, room, user) {
 
 		rooms.sort();
 
-		for (let u in rooms) {
-			let curRoom = Rooms.get(rooms[u]);
+		for (const u in rooms) {
+			const curRoom = Rooms.get(rooms[u]);
 			if (curRoom.type === "battle") {
 				battleRooms.push(`<a href="/${curRoom.roomid}" class="ilink">${curRoom.title}</a> (${curRoom.userCount})`);
 			}
@@ -123,8 +122,8 @@ clearall(target, room, user) {
 
 		if (!user.can("roomowner")) return this.sendReplyBox(header + official.join(" ") + nonOfficial.join(" "));
 		this.sendReplyBox(header + official.join(" ") + nonOfficial.join(" ") + privateRoom.join(" ") + (groupChats.length > 1 ? groupChats.join(" ") : "") + (battleRooms.length > 1 ? battleRooms.join(" ") : ""));
-	}, 
-  "!regdate": true,
+	},
+	"!regdate": true,
 	regdate(target, room, user) {
 		if (!target) target = user.name;
 		target = toID(target);
@@ -142,41 +141,41 @@ clearall(target, room, user) {
 			if (date === 0) {
 				return `${Server.nameColor(target, true)} <strong><font color="red">is not registered.</font></strong>`;
 			} else {
-				let d = new Date(date);
-				let MonthNames = ["January", "February", "March", "April", "May", "June",
+				const d = new Date(date);
+				const MonthNames = ["January", "February", "March", "April", "May", "June",
 					"July", "August", "September", "October", "November", "December",
 				];
-				let DayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+				const DayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 				return `${Server.nameColor(target, true)} was registered on <strong>${DayNames[d.getUTCDay()]}, ${MonthNames[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}</strong> at <strong>${d.getUTCHours()}:${d.getUTCMinutes()}:${d.getUTCSeconds()} UTC.</strong>`;
 			}
 			//room.update();
 		}
 	},
 	regdatehelp: ["/regdate - Gets the regdate (register date) of a username."],
-  
-  "!seen": true,
+
+	"!seen": true,
 	seen(target, room, user) {
 		if (!this.runBroadcast()) return;
 		if (!target) return this.parse("/help seen");
-		let targetUser = Users.get(target);
+		const targetUser = Users.get(target);
 		if (targetUser && targetUser.connected) return this.sendReplyBox(`${Server.nameColor(targetUser.name, true)} is <strong><font color="limegreen">Currently Online</strong></font>.`);
 		target = Chat.escapeHTML(target);
-		let seen = Db.seen.get(toID(target));
+		const seen = Db.seen.get(toID(target));
 		if (!seen) return this.sendReplyBox(`${Server.nameColor(target, true)} has <strong><font color="red">never been online</font></strong> on this server.`);
 		this.sendReplyBox(`${Server.nameColor(target, true)} was last seen <strong>${Chat.toDurationString(Date.now() - seen, {precision: true})}</strong> ago.`);
 	},
 	seenhelp: ["/seen - Shows when the user last connected on the server."],
-  
-  "!m8b": true,
+
+	"!m8b": true,
 	helixfossil: "m8b",
 	helix: "m8b",
 	magic8ball: "m8b",
 	m8b(target, room, user) {
 		if (!this.runBroadcast()) return;
-		let results = ["Signs point to yes.", "Yes.", "Reply hazy, try again.", "Without a doubt.", "My sources say no.", "As I see it, yes.", "You may rely on it.", "Concentrate and ask again.", "Outlook not so good.", "It is decidedly so.", "Better not tell you now.", "Very doubtful.", "Yes - definitely.", "It is certain.", "Cannot predict now.", "Most likely.", "Ask again later.", "My reply is no.", "Outlook good.", "Don't count on it."];
+		const results = ["Signs point to yes.", "Yes.", "Reply hazy, try again.", "Without a doubt.", "My sources say no.", "As I see it, yes.", "You may rely on it.", "Concentrate and ask again.", "Outlook not so good.", "It is decidedly so.", "Better not tell you now.", "Very doubtful.", "Yes - definitely.", "It is certain.", "Cannot predict now.", "Most likely.", "Ask again later.", "My reply is no.", "Outlook good.", "Don't count on it."];
 		return this.sendReplyBox(results[Math.floor(Math.random() * results.length)]);
 	},
-  
+
 	declaregreen: "declarered",
 	declarered(target, room, user, connection, cmd) {
 		if (!target) return this.parse("/help declare");
@@ -187,32 +186,32 @@ clearall(target, room, user) {
 		room.update();
 		this.room.modlog(`${user.name} declared ${target}`);
 	},
-  fj: "forcejoin",
+	fj: "forcejoin",
 	forcejoin(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('lock', null, room);
 		if (!target) return this.parse("/help forcejoin");
-		let parts = target.split(",");
+		const parts = target.split(",");
 		if (!parts[0] || !parts[1]) return this.parse("/help forcejoin");
-		let userid = toID(parts[0]);
-		let roomid = toID(parts[1]);
+		const userid = toID(parts[0]);
+		const roomid = toID(parts[1]);
 		if (!Users.get(userid)) return this.errorReply("User not found.");
 		if (!Rooms.get(roomid)) return this.errorReply("Room not found.");
 		Users.get(userid).joinRoom(roomid);
 	},
 	forcejoinhelp: ["/forcejoin [target], [room] - Forces a user to join a room"],
-  
-  kickall(target, room, user) {
+
+	kickall(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('profile', null, room);
-		for (let i in room.users) {
+		for (const i in room.users) {
 			if (room.users[i] !== user.id) {
 				room.users[i].leaveRoom(room.roomid);
 			}
 		}
 		this.privateModAction(`(${user.name} kicked everyone from the room.)`);
 	},
-  masspm: "pmall",
+	masspm: "pmall",
 	pmall(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('hotpatch', null, room);
@@ -252,13 +251,13 @@ clearall(target, room, user) {
 		if (!target) return this.errorReply("/rmall [message] - Sends a PM to all users in the room.");
 		target = target.replace(/<(?:.|\n)*?>/gm, "");
 
-		for (let i in room.users) {
-			let message = `|pm|${pmName}|${room.users[i].getIdentity()}|${target}`;
+		for (const i in room.users) {
+			const message = `|pm|${pmName}|${room.users[i].getIdentity()}|${target}`;
 			room.users[i].send(message);
 		}
 		this.privateModAction(`(${user.name} mass (room) PM'ed: ${target})`);
 	},
-  d: "poof",
+	d: "poof",
 	cpoof: "poof",
 	poof(target, room, user) {
 		if (Config.poofOff) return this.errorReply("Poof is currently disabled.");
@@ -269,8 +268,8 @@ clearall(target, room, user) {
 		message = message.replace(/{{user}}/g, user.name);
 		if (!this.canTalk(message)) return false;
 
-		let colour = "#" + [1, 1, 1].map(function () {
-			let part = Math.floor(Math.random() * 0xaa);
+		const colour = "#" + [1, 1, 1].map(function () {
+			const part = Math.floor(Math.random() * 0xaa);
 			return (part < 0x10 ? "0" : "") + part.toString(16);
 		}).join("");
 
@@ -295,19 +294,19 @@ clearall(target, room, user) {
 		return this.sendReply("Poof is now disabled.");
 	},
 	poofoffhelp: ["/poofoff - Disable the use of the /poof command."],
-  
-  "!ship": true,
+
+	"!ship": true,
 	ship(target, room, user) {
 		if (!this.canTalk()) return;
 		if (!this.runBroadcast()) return;
-		let [first, ...second] = target.split(",").map(p => p.trim());
+		const [first, ...second] = target.split(",").map(p => p.trim());
 		if (!first || !second) return this.parse(`/shiphelp`);
-		let compatibility = Math.floor(Math.random() * 100);
+		const compatibility = Math.floor(Math.random() * 100);
 		this.sendReply(`${first} is ${compatibility}% compatible with ${second}.`);
 	},
 	shiphelp: [`/ship [first target], [second target] - Gives the compatibility of the two targets.`],
-  
-  "!define": true,
+
+	"!define": true,
 	def: "define",
 	define(target, room, user) {
 		target = toID(target);
@@ -321,7 +320,7 @@ clearall(target, room, user) {
 			return;
 		}
 
-		let options = {
+		const options = {
 			host: "api.wordnik.com",
 			port: 80,
 			path: `/v4/word.json/${target}/definitions?limit=3&sourceDictionaries=all&useCanonical=false&includeTags=false&api_key=${Config.defineKey}`,
@@ -346,7 +345,7 @@ clearall(target, room, user) {
 					return;
 				} else {
 					let count = 1;
-					for (let u in data) {
+					for (const u in data) {
 						if (count > 3) break;
 						output += `(<strong>${count}</strong>) ${data[u][`text`]}<br />`;
 						count++;
@@ -375,7 +374,7 @@ clearall(target, room, user) {
 			return;
 		}
 
-		let options = {
+		const options = {
 			host: "api.urbandictionary.com",
 			port: 80,
 			path: `/v0/define?term=${encodeURIComponent(target)}`,
@@ -393,7 +392,7 @@ clearall(target, room, user) {
 					return;
 				}
 				data = JSON.parse(data);
-				let definitions = data[`list`];
+				const definitions = data[`list`];
 				if (data[`result_type`] === `no_results` || !data) {
 					this.sendReplyBox(`No results for <strong>"${target}"</strong>.`);
 					if (room) room.update();
@@ -415,8 +414,8 @@ clearall(target, room, user) {
 		});
 	},
 	urbandefinehelp: ["/u [word] - Gives the Urban Definition for a word."],
-  
-  etour(target, room, user) {
+
+	etour(target, room, user) {
 		if (!target) return this.parse("/help etour");
 		this.parse(`/tour create ${target}, elimination`);
 	},
@@ -427,17 +426,17 @@ clearall(target, room, user) {
 		this.parse(`/tour create ${target}, roundrobin`);
 	},
 	rtourhelp: ["/rtour [format] - Creates a round robin tournament."],
-  
-  rf: "roomfounder",
+
+	rf: "roomfounder",
 	roomfounder(target, room, user) {
 		if (!room.persist) {
 			return this.errorReply("/roomfounder - This room isn't designed for per-room moderation to be added");
 		}
 		if (!target) return this.parse("/help roomfounder");
 		target = this.splitTarget(target, true);
-		let targetUser = this.targetUser;
-		let name = this.targetUsername;
-		let userid = toID(name);
+		const targetUser = this.targetUser;
+		const name = this.targetUsername;
+		const userid = toID(name);
 
 		if (!Users.isUsernameKnown(userid)) {
 			return this.errorReply(`User "${this.targetUsername}" is offline and unrecognized, and so can't be promoted.`);

@@ -70,9 +70,9 @@ exports.commands = {
 			room = this.requireRoom();
 			this.checkCan('news', null, room);
 			if (!target) return this.parse("/help serverannouncements");
-			let parts = target.split(",");
+			const parts = target.split(",");
 			if (parts.length < 2) return this.errorReply("Usage: /news add [title], [desc]");
-			let descArray = [];
+			const descArray = [];
 			if (parts.length - 2 > 0) {
 				for (let j = 0; j < parts.length; j++) {
 					if (j < 1) continue;
@@ -80,24 +80,24 @@ exports.commands = {
 				}
 				parts[1] = descArray.join();
 			}
-			let title = parts[0], desc = parts[1], postedBy = user.name;
-			let d = new Date();
+			const title = parts[0], desc = parts[1], postedBy = user.name;
+			const d = new Date();
 			const MonthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
 				"July", "Aug", "Sep", "Oct", "Nov", "Dec",
 			];
-			let postTime = (`${MonthNames[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`);
+			const postTime = (`${MonthNames[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`);
 			Db.news.set(title, [postedBy, desc, postTime]);
 			this.privateModAction(`(${user.name} added server announcement: ${parts[0]})`);
 		},
-    
+
 		request(target, room, user) {
 			if (!user.named) return this.errorReply("You must have a name before requesting an announcement.");
 			if (!this.canTalk()) return this.errorReply("You can't use this command while unable to speak.");
 			if (!target) return this.sendReply(`/news request [message] - Requests a news announcement from the ${Config.serverName} Staff.`);
 			if (target.length < 1) return this.sendReply(`/news request [message] - Requests a news announcement from the ${Config.serverName} Staff.`);
 			let newsId = (Object.keys(newsRequests).length + 1);
-			let d = new Date();
-			let MonthNames = ["January", "February", "March", "April", "May", "June",
+			const d = new Date();
+			const MonthNames = ["January", "February", "March", "April", "May", "June",
 				"July", "August", "September", "October", "November", "December",
 			];
 			while (newsRequests[newsId]) newsId--;

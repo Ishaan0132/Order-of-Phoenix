@@ -767,7 +767,7 @@ export class User extends Chat.MessageContext {
 		}
 
 		Server.showNews(userid, this);
-		
+
 		const userType = await this.validateToken(token, name, userid, connection);
 		if (userType === null) return;
 		if (userType === '1') newlyRegistered = false;

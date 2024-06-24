@@ -12,7 +12,7 @@ const minLevelExp = 15;
 const multiply = 1.9;
 
 function isExp(exp) {
-	let numExp = Number(exp);
+	const numExp = Number(exp);
 	if (isNaN(exp)) return "Must be a number.";
 	if (String(exp).includes(".")) return "Cannot contain a decimal.";
 	if (numExp < 1) return "Cannot be less than one EXP.";
@@ -20,11 +20,11 @@ function isExp(exp) {
 }
 Server.isExp = isExp;
 
-let EXP = Server.EXP = {
+const EXP = Server.EXP = {
 	readExp(id, callback) {
 		id = toID(id);
 
-		let amount = Db.exp.get(id, DEFAULT_AMOUNT);
+		const amount = Db.exp.get(id, DEFAULT_AMOUNT);
 		if (typeof callback !== "function") {
 			return amount;
 		} else {
@@ -41,9 +41,9 @@ let EXP = Server.EXP = {
 		if (isNaN(amount)) {
 			throw new Error(`EXP.writeExp: Expected amount parameter to be a Number, instead received ${typeof amount}`);
 		}
-		let curTotal = Db.exp.get(id, DEFAULT_AMOUNT);
+		const curTotal = Db.exp.get(id, DEFAULT_AMOUNT);
 		Db.exp.set(id, curTotal + amount);
-		let newTotal = Db.exp.get(id);
+		const newTotal = Db.exp.get(id);
 		if (callback && typeof callback === "function") {
 			// If a callback is specified, return `newTotal` through the callback.
 			return callback(newTotal);
@@ -66,13 +66,13 @@ class ExpFunctions {
 
 	level(id) {
 		id = toID(id);
-		let curExp = Db.exp.get(id, 0);
+		const curExp = Db.exp.get(id, 0);
 		return Math.floor(Math.pow(curExp / minLevelExp, 1 / multiply) + 1);
 	}
 
 	nextLevel(user) {
-		let curExp = Db.exp.get(toID(user), 0);
-		let lvl = this.level(toID(user));
+		const curExp = Db.exp.get(toID(user), 0);
+		const lvl = this.level(toID(user));
 		return Math.floor(Math.pow(lvl, multiply) * minLevelExp) - curExp;
 	}
 
@@ -84,9 +84,9 @@ class ExpFunctions {
 		if (Db.expoff.get(user.id)) return false;
 		if (DOUBLE_XP || user.doubleExp) amount = amount * 2;
 		EXP.readExp(user.id, totalExp => {
-			let oldLevel = this.level(user.id);
+			const oldLevel = this.level(user.id);
 			EXP.writeExp(user.id, amount, newTotal => {
-				let level = this.level(user.id);
+				const level = this.level(user.id);
 				if (oldLevel < level) {
 					let reward = ``;
 					switch (level) {
@@ -140,7 +140,7 @@ class ExpFunctions {
 						reward = `a Chatroom. To claim your Chatroom, use the command /usetoken room, [name of the chatroom].`;
 						break;
 					case 40:
-					Economy.logTransaction(`${user.name} received a Roomshop for reaching level ${level}.`);
+						Economy.logTransaction(`${user.name} received a Roomshop for reaching level ${level}.`);
 						Server.pmStaff(`${user.name} has earned a Roomshop for reaching level ${level}!`);
 						if (!user.tokens) user.tokens = {};
 						user.tokens.roomshop = true;
@@ -181,7 +181,6 @@ if (Server.ExpControl) {
 Server.ExpControl = new ExpFunctions();
 
 exports.commands = {
-	
 	exp(target, room, user) {
 		if (!this.runBroadcast()) return;
 		let targetId = toID(target);
@@ -212,10 +211,10 @@ exports.commands = {
 	giveexp(target, room) {
 		room = this.requireRoom();
 		this.checkCan('exp', null, room);
-		let [username, amount] = target.split(",").map(p => { return p.trim(); });
+		let [username, amount] = target.split(",").map(p => p.trim());
 		if (!amount) return this.parse("/help giveexp");
 
-		let uid = toID(username);
+		const uid = toID(username);
 		amount = isExp(amount);
 
 		if (amount > 1000) return this.sendReply("You cannot give more than 1,000 exp at a time.");
@@ -231,7 +230,7 @@ exports.commands = {
 	confirmresetexp: "resetxp",
 	resetxp(target, room, user, conection, cmd) {
 		if (!target) return this.errorReply("USAGE: /resetxp (USER)");
-		let targetUser = toID(target);
+		const targetUser = toID(target);
 		room = this.requireRoom();
 		this.checkCan('exp', null, room);
 		if (cmd !== "confirmresetexp") {
@@ -258,7 +257,7 @@ exports.commands = {
 		room = this.requireRoom();
 		this.checkCan('exp', null, room);
 		if (!target) return this.parse("/help expunban");
-		let targetId = toID(target);
+		const targetId = toID(target);
 		if (!Db.expoff.has(targetId)) return this.errorReply(`${target} is not currently exp banned.`);
 		Db.expoff.remove(targetId);
 		this.globalModlog(`EXPUNBAN`, targetId, ` by ${user.name}`);
@@ -271,7 +270,7 @@ exports.commands = {
 		room = this.requireRoom();
 		this.checkCan('exp', null, room);
 		if (!target) return this.parse("/help expban");
-		let targetId = toID(target);
+		const targetId = toID(target);
 		if (Db.expoff.has(targetId)) return this.errorReply(`${target} is currently exp banned.`);
 		Db.expoff.set(targetId, true);
 		this.globalModlog(`EXPBAN`, targetId, ` by ${user.name}`);
@@ -287,9 +286,7 @@ exports.commands = {
 		target = Number(target);
 		if (isNaN(target)) target = 100;
 		if (!this.runBroadcast()) return;
-		let keys = Db.exp.keys().map(name => {
-			return {name: name, exp: Db.exp.get(name).toLocaleString()};
-		});
+		const keys = Db.exp.keys().map(name => ({name: name, exp: Db.exp.get(name).toLocaleString()}));
 		if (!keys.length) return this.sendReplyBox("EXP ladder is empty.");
 		keys.sort(function (a, b) { return toID(b.exp) - toID(a.exp); });
 		this.sendReplyBox(rankLadder("Exp Ladder", "EXP", keys.slice(0, target), "exp") + "</div>");
