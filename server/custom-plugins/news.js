@@ -49,7 +49,7 @@ exports.commands = {
 		view(target, room, user) {
 			if (!this.runBroadcast()) return;
 			let output = `<center><strong>${Config.serverName} News:</strong></center>`;
-      		output += generateNews().join("<hr />");
+			output += generateNews().join("<hr />");
 			if (this.broadcasting) return this.sendReplyBox(`<div class ="infobox-limited" ${output}</div>`);
 			return user.send(`|popup||wide||html|${output}`);
 		},

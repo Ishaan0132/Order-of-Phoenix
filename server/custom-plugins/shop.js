@@ -366,7 +366,7 @@ exports.commands = {
 											last += path[q];
 											if (q !== (+path.length - +1)) {
 												last += '.';
-												if (x == 0) back += path[q];
+												if (x === 0) back += path[q];
 												if (q !== (+path.length - +2) && x === 0) back += '.';
 											}
 										}

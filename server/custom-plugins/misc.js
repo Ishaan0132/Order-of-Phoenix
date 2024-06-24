@@ -56,7 +56,7 @@ exports.commands = {
 
 		this.privateModAction(`(${user.name} used /clearall.)`);
 	},
-  	gclearall: "globalclearall",
+	gclearall: "globalclearall",
 	globalclearall(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('hotpatch', null, room);
@@ -65,7 +65,7 @@ exports.commands = {
 		Users.users.forEach(u => user.popup("All rooms have been cleared."));
 		this.privateModAction(`(${user.name} used /globalclearall.)`);
 	},
-  	rk: "kick",
+	rk: "kick",
 	roomkick: "kick",
 	kick(target, room, user) {
 		if (!target) return this.parse("/help kick");
@@ -82,7 +82,7 @@ exports.commands = {
 		targetUser.leaveRoom(room.roomid);
 	},
 	kickhelp: ["/kick [user], [reason] - Kick a user out of a room [reasons are optional]. Requires: % @ # & ~"],
-  	roomlist(target, room, user) {
+	roomlist(target, room, user) {
 		const header = [`<strong><font color="#1aff1a" size="2">Total users connected: ${Rooms.rooms.userCount}</font></strong><br />`],
 			official = [`<strong><font color="#ff9900" size="2"><u>Official Rooms:</u></font></strong><br />`],
 			nonOfficial = [`<hr><strong><u><font color="#005ce6" size="2">Public Rooms:</font></u></strong><br />`],
@@ -175,7 +175,6 @@ exports.commands = {
 		const results = ["Signs point to yes.", "Yes.", "Reply hazy, try again.", "Without a doubt.", "My sources say no.", "As I see it, yes.", "You may rely on it.", "Concentrate and ask again.", "Outlook not so good.", "It is decidedly so.", "Better not tell you now.", "Very doubtful.", "Yes - definitely.", "It is certain.", "Cannot predict now.", "Most likely.", "Ask again later.", "My reply is no.", "Outlook good.", "Don't count on it."];
 		return this.sendReplyBox(results[Math.floor(Math.random() * results.length)]);
 	},
-
 	declaregreen: "declarered",
 	declarered(target, room, user, connection, cmd) {
 		if (!target) return this.parse("/help declare");
@@ -200,7 +199,6 @@ exports.commands = {
 		Users.get(userid).joinRoom(roomid);
 	},
 	forcejoinhelp: ["/forcejoin [target], [room] - Forces a user to join a room"],
-
 	kickall(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('profile', null, room);
