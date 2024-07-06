@@ -3,7 +3,7 @@ import {changeSet, getName, enemyStaff, PSEUDO_WEATHERS} from "./scripts";
 
 const STRONG_WEATHERS = ['desolateland', 'primordialsea', 'deltastream', 'deserteddunes', 'millenniumcastle'];
 
-export const Abilities: {[k: string]: ModdedAbilityData} = {
+export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
 	/*
 	// Example
 	abilityid: {
@@ -2865,9 +2865,6 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				if (!pokemon.m.bag) {
 					pokemon.m.bag = ['Blast Seed', 'Oran Berry', 'Petrify Orb', 'Luminous Orb', 'Reviver Seed'];
 				}
-			},
-			onEnd(target) {
-				delete target.volatiles['treasurebag'];
 			},
 			onResidual(pokemon, source, effect) {
 				if (!pokemon.m.bag) {
