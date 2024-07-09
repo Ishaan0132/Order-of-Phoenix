@@ -106,8 +106,8 @@ export interface RoomSettings {
 	jeopardyDisabled?: boolean;
 	mafiaDisabled?: boolean;
 	unoDisabled?: boolean;
-	blackjackDisabled?: boolean;
 	hangmanDisabled?: boolean;
+	auctionDisabled?: boolean;
 	gameNumber?: number;
 	highTraffic?: boolean;
 	spotlight?: string;
