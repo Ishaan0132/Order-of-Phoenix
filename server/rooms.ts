@@ -1484,6 +1484,7 @@ export class GlobalRoomState {
 			if (level === 50) displayCode |= 16;
 			 // 32 was previously used for Multi Battles
 			if (format.bestOfDefault) displayCode |= 64;
+			if (format.teraPreviewDefault) displayCode |= 128;
 			this.formatList += ',' + displayCode.toString(16);
 		}
 		return this.formatList;
