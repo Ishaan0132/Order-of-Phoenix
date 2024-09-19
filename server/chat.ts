@@ -702,10 +702,16 @@ export class CommandContext extends MessageContext {
 					const curUser = Users.get(u);
 					if (!curUser || !curUser.connected) continue;
 					if (Server.ignoreEmotes[curUser.user.id]) {
-						curUser.sendTo(this.room, `${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|${message}`);
+						curUser.sendTo(
+							this.room,
+							`${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|${message}`
+						);
 						continue;
 					}
-					curUser.sendTo(this.room, `${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|/html ${emoticons}`);
+					curUser.sendTo(
+						this.room,
+						`${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|/html ${emoticons}`
+					);
 				}
 				this.room.log.log.push(`${(this.room.type === 'chat' ? `|c:|${(~~(Date.now() / 1000))}|` : `|c|`)}${this.user.getIdentity(this.room)}|${message}`);
 				this.room.game?.onLogMessage?.(message, this.user);
