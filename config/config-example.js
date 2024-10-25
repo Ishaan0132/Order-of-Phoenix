@@ -593,7 +593,7 @@ exports.grouplist = [
 		console: true,
 		bypassall: true,
 		lockdown: true,
-		promote: '&u',
+		promote: '~u',
 		roomowner: true,
 		roombot: true,
 		roommod: true,
@@ -696,7 +696,7 @@ exports.grouplist = [
 		timer: true,
 		modlog: true,
 		alts: '%u',
-		bypassblocks: 'u%@&~',
+		bypassblocks: 'u%@~',
 		receiveauthmessages: true,
 		gamemoderation: true,
 		jeopardy: true,
@@ -704,13 +704,6 @@ exports.grouplist = [
 		minigame: true,
 		modchat: true,
 		hiderank: true,
-	},
-	{
-		symbol: '\u00a7',
-		id: "sectionleader",
-		name: "Section Leader",
-		inherit: '+',
-		jurisdiction: 'u',
 	},
 	{
 		// Bots are ranked below Driver/Mod so that Global Bots can be kept out
