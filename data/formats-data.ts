@@ -2451,7 +2451,7 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 	deoxysspeed: {
 		tier: "OU",
 		doublesTier: "(DUU)",
-		natDexTier: "Uber",
+		natDexTier: "(OU)",
 	},
 	turtwig: {
 		tier: "LC",
@@ -4050,7 +4050,7 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		natDexTier: "RU",
 	},
 	hoopaunbound: {
-		tier: "UU",
+		tier: "UUBL",
 		doublesTier: "(DUU)",
 		natDexTier: "UUBL",
 	},
