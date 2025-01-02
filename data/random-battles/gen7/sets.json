@@ -142,7 +142,7 @@
         ]
     },
     "pidgeotmega": {
-        "level": 79,
+        "level": 78,
         "sets": [
             {
                 "role": "Bulky Attacker",
@@ -971,7 +971,7 @@
         ]
     },
     "scyther": {
-        "level": 83,
+        "level": 82,
         "sets": [
             {
                 "role": "Fast Attacker",
@@ -1160,7 +1160,7 @@
         ]
     },
     "aerodactyl": {
-        "level": 82,
+        "level": 81,
         "sets": [
             {
                 "role": "Bulky Attacker",
@@ -1310,7 +1310,7 @@
         ]
     },
     "meganium": {
-        "level": 91,
+        "level": 92,
         "sets": [
             {
                 "role": "Staller",
@@ -1570,7 +1570,7 @@
         ]
     },
     "slowking": {
-        "level": 88,
+        "level": 89,
         "sets": [
             {
                 "role": "Bulky Support",
@@ -1676,7 +1676,7 @@
         ]
     },
     "steelixmega": {
-        "level": 82,
+        "level": 81,
         "sets": [
             {
                 "role": "Bulky Support",
@@ -1766,7 +1766,7 @@
         ]
     },
     "heracrossmega": {
-        "level": 82,
+        "level": 81,
         "sets": [
             {
                 "role": "Wallbreaker",
@@ -1889,6 +1889,11 @@
                 "role": "Setup Sweeper",
                 "movepool": ["dracometeor", "hydropump", "icebeam", "raindance", "waterfall"],
                 "abilities": ["Swift Swim"]
+            },
+            {
+                "role": "Fast Attacker",
+                "movepool": ["dragondance", "ironhead", "outrage", "waterfall"],
+                "abilities": ["Sniper", "Swift Swim"]
             }
         ]
     },
@@ -2120,13 +2125,8 @@
         "level": 78,
         "sets": [
             {
-                "role": "Wallbreaker",
-                "movepool": ["fireblast", "highjumpkick", "knockoff", "protect", "stoneedge"],
-                "abilities": ["Speed Boost"]
-            },
-            {
                 "role": "Setup Sweeper",
-                "movepool": ["flareblitz", "highjumpkick", "knockoff", "stoneedge", "swordsdance"],
+                "movepool": ["flareblitz", "highjumpkick", "knockoff", "protect", "stoneedge", "swordsdance"],
                 "abilities": ["Speed Boost"]
             }
         ]
@@ -2503,7 +2503,7 @@
         ]
     },
     "manectricmega": {
-        "level": 79,
+        "level": 78,
         "sets": [
             {
                 "role": "Fast Attacker",
@@ -2713,7 +2713,7 @@
         ]
     },
     "altaria": {
-        "level": 90,
+        "level": 91,
         "sets": [
             {
                 "role": "Bulky Support",
@@ -2939,7 +2939,7 @@
         ]
     },
     "absol": {
-        "level": 88,
+        "level": 87,
         "sets": [
             {
                 "role": "Wallbreaker",
@@ -2964,14 +2964,14 @@
         "level": 91,
         "sets": [
             {
-                "role": "Fast Support",
+                "role": "Bulky Support",
                 "movepool": ["earthquake", "freezedry", "spikes", "superfang", "taunt"],
                 "abilities": ["Inner Focus"]
             }
         ]
     },
     "glaliemega": {
-        "level": 84,
+        "level": 83,
         "sets": [
             {
                 "role": "Fast Attacker",
@@ -3008,7 +3008,7 @@
         ]
     },
     "gorebyss": {
-        "level": 83,
+        "level": 84,
         "sets": [
             {
                 "role": "Setup Sweeper",
@@ -3165,7 +3165,7 @@
         ]
     },
     "latias": {
-        "level": 80,
+        "level": 79,
         "sets": [
             {
                 "role": "Fast Support",
@@ -3928,7 +3928,7 @@
         ]
     },
     "abomasnowmega": {
-        "level": 84,
+        "level": 83,
         "sets": [
             {
                 "role": "Bulky Attacker",
@@ -4445,7 +4445,7 @@
         ]
     },
     "darkrai": {
-        "level": 76,
+        "level": 75,
         "sets": [
             {
                 "role": "Z-Move user",
@@ -5052,7 +5052,7 @@
         ]
     },
     "scolipede": {
-        "level": 81,
+        "level": 80,
         "sets": [
             {
                 "role": "Fast Support",
@@ -5107,7 +5107,7 @@
         ]
     },
     "krookodile": {
-        "level": 80,
+        "level": 79,
         "sets": [
             {
                 "role": "Fast Attacker",
@@ -5153,7 +5153,7 @@
         ]
     },
     "scrafty": {
-        "level": 85,
+        "level": 84,
         "sets": [
             {
                 "role": "Setup Sweeper",
@@ -5475,7 +5475,7 @@
         ]
     },
     "beartic": {
-        "level": 91,
+        "level": 92,
         "sets": [
             {
                 "role": "Wallbreaker",
@@ -5619,7 +5619,7 @@
         ]
     },
     "heatmor": {
-        "level": 92,
+        "level": 93,
         "sets": [
             {
                 "role": "Wallbreaker",
@@ -5881,7 +5881,7 @@
             },
             {
                 "role": "Z-Move user",
-                "movepool": ["freezeshock", "fusionbolt", "honeclaws", "outrage", "roost"],
+                "movepool": ["freezeshock", "fusionbolt", "honeclaws", "outrage"],
                 "abilities": ["Teravolt"],
                 "preferredTypes": ["Ice"]
             }
@@ -6039,7 +6039,7 @@
         ]
     },
     "vivillon": {
-        "level": 86,
+        "level": 85,
         "sets": [
             {
                 "role": "Bulky Setup",
@@ -6257,7 +6257,7 @@
         "level": 85,
         "sets": [
             {
-                "role": "Fast Attacker",
+                "role": "Wallbreaker",
                 "movepool": ["darkpulse", "glare", "hypervoice", "surf", "thunderbolt", "voltswitch"],
                 "abilities": ["Dry Skin"]
             },
@@ -6372,7 +6372,7 @@
         ]
     },
     "trevenant": {
-        "level": 90,
+        "level": 91,
         "sets": [
             {
                 "role": "Wallbreaker",
@@ -6452,7 +6452,7 @@
         ]
     },
     "xerneas": {
-        "level": 64,
+        "level": 65,
         "sets": [
             {
                 "role": "Setup Sweeper",
@@ -7295,7 +7295,7 @@
         ]
     },
     "kommoo": {
-        "level": 75,
+        "level": 74,
         "sets": [
             {
                 "role": "Z-Move user",
