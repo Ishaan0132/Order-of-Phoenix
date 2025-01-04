@@ -90,7 +90,7 @@ exports.commands = {
 					console.error(err);
 				}
 
-				if (Users(userid)) Users(userid).popup("|html|" + Server.nameColor(user.name, true) + " has deleted your custom avatar.");
+				if (Users.get(userid)) Users.get(userid).popup("|html|" + Server.nameColor(user.name, true) + " has deleted your custom avatar.");
 				this.sendReply(target + "'s avatar has been successfully removed.");
 				Monitor.adminlog(target + "'s avatar has been successfully removed by " + user.name + ".");
 			});
