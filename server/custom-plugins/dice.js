@@ -125,8 +125,8 @@ class Dice {
 exports.commands = {
 	startdice: 'dicegame',
 	dicegame: function (target, room, user) {
-		if (room.id === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
-		if (!user.can('broadcast', null, room) && room.id !== 'casino') return this.errorReply("You must be ranked + or higher in this room to start a game of dice outside the Casino.");
+		if (room.roomid === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
+		if (!user.can('broadcast', null, room) && room.roomid !== 'casino') return this.errorReply("You must be ranked + or higher in this room to start a game of dice outside the Casino.");
 		if (!this.canTalk()) return;
 		if (room.dice) return this.errorReply("There is already a game of dice going on in this room.");
 
@@ -142,7 +142,7 @@ exports.commands = {
 
 	dicejoin: 'joindice',
 	joindice: function (target, room, user) {
-		if (room.id === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
+		if (room.roomid === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
 		if (!this.canTalk()) return;
 		if (!room.dice) return this.errorReply('There is no game of dice going on in this room.');
 
@@ -151,7 +151,7 @@ exports.commands = {
 
 	diceleave: 'leavedice',
 	leavedice: function (target, room, user) {
-		if (room.id === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
+		if (room.roomid === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
 		if (!room.dice) return this.errorReply('There is no game of dice going on in this room.');
 
 		room.dice.leave(user, this);
@@ -159,7 +159,7 @@ exports.commands = {
 
 	diceend: 'enddice',
 	enddice: function (target, room, user) {
-		if (room.id === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
+		if (room.roomid === 'lobby') return this.errorReply("This command cannot be used in the Lobby.");
 		if (!this.canTalk()) return;
 		if (!room.dice) return this.errorReply('There is no game of dice going on in this room.');
 		if (!user.can('broadcast', null, room) && !room.dice.players.includes(user)) return this.errorReply("You must be ranked + or higher in this room to end a game of dice.");

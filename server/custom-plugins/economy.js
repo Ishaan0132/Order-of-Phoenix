@@ -72,6 +72,11 @@ const Economy = global.Economy = {
 		if (!message) return false;
 		FS("logs/transactions.log").append(`[${new Date().toUTCString()}] ${message}\n`);
 	},
+
+	logDice: function (message) {
+		if (!message) return false;
+		FS("logs/dice.log").append(`[${new Date().toUTCString()}] ${message}\n`);
+	},
 };
 
 function findItem(item, money) {
