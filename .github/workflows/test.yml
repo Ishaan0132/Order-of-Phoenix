@@ -54,6 +54,7 @@ jobs:
           ./tools/set-import/sets
           ./tools/modlog/converter.js
           ./server/global-variables.d.ts
+          ./server/custom-plugins/
 
     - name: Determine whether test/sim or test/random-battles need to run (if pull request)
       if: ${{ github.event_name == 'pull_request' }}
