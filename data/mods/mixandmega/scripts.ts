@@ -3,9 +3,9 @@ export const Scripts: ModdedBattleScriptsData = {
 	init() {
 		for (const i in this.data.Items) {
 			const item = this.data.Items[i];
-			if (!item.megaStone && !item.onDrive && !item.onPlate && !item.onMemory) continue;
+			if (!item.megaStone && !item.onDrive && !(item.onPlate && !item.zMove) && !item.onMemory) continue;
 			this.modData('Items', i).onTakeItem = false;
-			if (item.isNonstandard) this.modData('Items', i).isNonstandard = null;
+			if (item.isNonstandard === "Past") this.modData('Items', i).isNonstandard = null;
 			if (item.megaStone) {
 				this.modData('FormatsData', this.toID(item.megaStone)).isNonstandard = null;
 			}
@@ -81,6 +81,12 @@ export const Scripts: ModdedBattleScriptsData = {
 			this.checkEVBalance();
 		}
 
+		if (format.customRules) {
+			const plural = format.customRules.length === 1 ? '' : 's';
+			const open = format.customRules.length <= 5 ? ' open' : '';
+			this.add(`raw|<div class="infobox"><details class="readmore"${open}><summary><strong>${format.customRules.length} custom rule${plural}:</strong></summary> ${format.customRules.join(', ')}</details></div>`);
+		}
+
 		if (format.onTeamPreview) format.onTeamPreview.call(this);
 		for (const rule of this.ruleTable.keys()) {
 			if ('+*-!'.includes(rule.charAt(0))) continue;
@@ -88,7 +94,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			if (subFormat.onTeamPreview) subFormat.onTeamPreview.call(this);
 		}
 
-		this.queue.addChoice({choice: 'start'});
+		this.queue.addChoice({ choice: 'start' });
 		this.midTurn = true;
 		if (!this.requestState) this.turnLoop();
 	},
@@ -121,7 +127,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				pokemon.ability = this.toID(species.abilities['0']);
 				pokemon.baseAbility = pokemon.ability;
 
-				const behemothMove: {[k: string]: string} = {
+				const behemothMove: { [k: string]: string } = {
 					'Rusted Sword': 'behemothblade', 'Rusted Shield': 'behemothbash',
 				};
 				const ironHead = pokemon.baseMoves.indexOf('ironhead');
@@ -130,8 +136,8 @@ export const Scripts: ModdedBattleScriptsData = {
 					pokemon.baseMoveSlots[ironHead] = {
 						move: move.name,
 						id: move.id,
-						pp: (move.noPPBoosts || move.isZ) ? move.pp : move.pp * 8 / 5,
-						maxpp: (move.noPPBoosts || move.isZ) ? move.pp : move.pp * 8 / 5,
+						pp: move.noPPBoosts ? move.pp : move.pp * 8 / 5,
+						maxpp: move.noPPBoosts ? move.pp : move.pp * 8 / 5,
 						target: move.target,
 						disabled: false,
 						disabledSource: '',
@@ -426,7 +432,7 @@ export const Scripts: ModdedBattleScriptsData = {
 
 			let type = pokemon.teraType;
 			if (pokemon.species.baseSpecies !== 'Ogerpon' && pokemon.getItem().name.endsWith('Mask')) {
-				type = this.dex.species.get(pokemon.getItem().forcedForme).forceTeraType!;
+				type = this.dex.species.get(pokemon.getItem().forcedForme).requiredTeraType!;
 			}
 			this.battle.add('-terastallize', pokemon, type);
 			pokemon.terastallized = type;
@@ -515,11 +521,13 @@ export const Scripts: ModdedBattleScriptsData = {
 		mutateOriginalSpecies(speciesOrForme, deltas) {
 			if (!deltas) throw new TypeError("Must specify deltas!");
 			const species = this.dex.deepClone(this.dex.species.get(speciesOrForme));
-			species.abilities = {'0': deltas.ability};
-			if (species.types[0] === deltas.type || deltas.formeType === 'Arceus') {
+			species.abilities = { '0': deltas.ability };
+			if (deltas.formeType === 'Arceus') {
 				const secondType = species.types[1];
 				species.types = [deltas.type];
 				if (secondType && secondType !== deltas.type) species.types.push(secondType);
+			} else if (species.types[0] === deltas.type) {
+				species.types = [deltas.type];
 			} else if (deltas.type === 'mono') {
 				species.types = [species.types[0]];
 			} else if (deltas.type) {
