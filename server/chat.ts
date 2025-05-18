@@ -708,7 +708,7 @@ export class CommandContext extends MessageContext {
 			if (emoticons && !this.room.disableEmoticons) {
 				for (const u in this.room.users) {
 					const curUser = Users.get(u);
-					if (!curUser || !curUser.connected) continue;
+					if (!curUser?.connected) continue;
 					if (Server.ignoreEmotes[curUser.user.id]) {
 						curUser.sendTo(
 							this.room,
@@ -741,7 +741,6 @@ export class CommandContext extends MessageContext {
 
 		return result;
 	}
-
 
 	checkFormat(room: BasicRoom | null | undefined, user: User, message: string) {
 		if (!room) return true;
